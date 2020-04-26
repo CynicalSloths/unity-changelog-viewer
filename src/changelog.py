@@ -28,6 +28,26 @@ class Changelog:
         self.getFeatures()
         self.getAPIChanges()
         self.getChanges()
+        
+    def getEntries(self, type):
+        if type == 'all' or type == 'known_issues':
+            for issue in self.getKnownIssues():
+                yield issue
+        if type == 'all' or type == 'fixes':
+            for fix in self.getFixes():
+                yield fix
+        if type == 'all' or type == 'features':
+            for improvement in self.getImprovements():
+                yield improvement
+        if type == 'all' or type == 'features':
+            for feature in self.getFeatures():
+                yield feature
+        if type == 'all' or type == 'changes':
+            for change in self.getAPIChanges():
+                yield change
+        if type == 'all' or type == 'changes':
+            for change in self.getChanges():
+                yield change
 
     def getAllEntryCategories(self):
         self.loadAll()
@@ -67,6 +87,7 @@ class Changelog:
         self.KnownIssues = []
         for entry in self.getChangelogEntry('known issues', 'h3'):
             self.KnownIssues.append(entry)
+        return self.KnownIssues
 
     # changelog
     def getFixes(self):
@@ -75,6 +96,7 @@ class Changelog:
         self.Fixes = []
         for entry in self.getChangelogEntry('fixes'):
             self.Fixes.append(entry)
+        return self.Fixes
 
     def getImprovements(self):
         if (self.Improvements is not None):
@@ -82,6 +104,7 @@ class Changelog:
         self.Improvements = []
         for entry in self.getChangelogEntry('improvements'):
             self.Improvements.append(entry)
+        return self.Improvements
 
     def getFeatures(self):
         if (self.Features is not None):
@@ -89,6 +112,7 @@ class Changelog:
         self.Features = []
         for entry in self.getChangelogEntry('features'):
             self.Features.append(entry)
+        return self.Features
 
     def getAPIChanges(self):
         if (self.APIChanges is not None):
@@ -96,6 +120,7 @@ class Changelog:
         self.APIChanges = []
         for entry in self.getChangelogEntry('api changes'):
             self.APIChanges.append(entry)
+        return self.APIChanges
 
     def getChanges(self):
         if (self.Changes is not None):
@@ -103,6 +128,7 @@ class Changelog:
         self.Changes = []
         for entry in self.getChangelogEntry('changes'):
             self.Changes.append(entry)
+        return self.Changes
 
     # helpers
     def getChangelogEntry(self, keyword, elementType = 'h4'):

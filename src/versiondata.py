@@ -11,10 +11,22 @@ class VersionData:
         self.Version = sem_ver
         self.Changelog = None
 
+    def getURL(self):
+        return self.URL
+
+    def getVersion(self):
+        return self.Version
+
     def getChangelog(self):
         if (self.Changelog is None):
             self.Changelog = Changelog(self.URL)
         return self.Changelog
+
+    @classmethod
+    def isVersionString(cls, string):
+        regexLine = r'^[0-9]+\.[0-9]{1}\.[0-9]{1,2}$'
+        matchObj = re.match(regexLine, string, re.M|re.I)
+        return matchObj is not None
 
     @classmethod
     def fromHRef(cls, href):

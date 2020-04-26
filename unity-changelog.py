@@ -10,35 +10,25 @@ parser = argparse.ArgumentParser(description='Interface for parsing data from th
 subparsers = parser.add_subparsers(help='sub command interface')
 parser.add_argument("-v", help='version')
 
-
+# Sub Command: list
 listParser = subparsers.add_parser("list")
+listParser.set_defaults(func=handlerList)
 listParser.add_argument("type", default='versions', nargs='?', choices=['versions', 'categories'])
+# Sub Command: list
 queryParser = subparsers.add_parser("query")
+queryParser.set_defaults(func=handlerQuery)
+queryParser.add_argument("--range", nargs=2)
+queryParser.add_argument("--categories", nargs='*')
+queryParser.add_argument("--type", default='all', nargs=1, choices=['all', 'fixes', 'features', 'changes', 'known_issues'])
 
+# parse arguments
 args = parser.parse_args()
 
-# prepare data
+
 allVersions = loadUnityVersions()
 allVersions.sort(key=lambda x: x.Version)
 
-
-
-if 'type' in vars(args):
-    if args.type == 'versions':
-        print ('Version releases of Unity3D since 2017:')
-        for version in allVersions:
-            print (version.Version)
-    elif args.type == 'categories':
-        print("Categories contained in the last 10 releases:")
-        categories = []
-        for version in allVersions[-10:]:
-            for entry in version.getChangelog().getAllEntryCategories():
-                categories.append(entry)
-        categories = list(set(categories))
-        categories.sort()
-        for cat in categories:
-            print(cat)
-
+args.func(args, allVersions)
 
 
 #import csv

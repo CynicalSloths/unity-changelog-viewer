@@ -1,6 +1,7 @@
 from .constants import *
 from .versiondata import *
 
+from progress.bar import Bar
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
@@ -55,14 +56,19 @@ def handlerList(args, allVersions):
             for cat in categories:
                 print(cat)
 
+# Heavy operation
 def getIssues(versions, type, categoryFilter):
     resultSet = []
-    for versionObj in versions:
-        changelogInfo = versionObj.getChangelog()
-        for entry in changelogInfo.getEntries(type):
-            if categoryFilter is not None and len(categoryFilter) > 0 and not entry.getCategory() in categoryFilter:
-                continue
-            resultSet.append('{0}: {1}'.format(entry.getCategory(), entry.getValue()))
+
+    with Bar('Parsing issues from version pages', max=len(versions)) as bar:
+        for versionObj in versions:
+            changelogInfo = versionObj.getChangelog()
+            for entry in changelogInfo.getEntries(type):
+                if categoryFilter is not None and len(categoryFilter) > 0 and not entry.getCategory() in categoryFilter:
+                    continue
+                resultSet.append('{0}: {1}'.format(entry.getCategory(), entry.getValue()))
+            bar.next()
+    print("Sorting result set...")
     resultSet = list(set(resultSet))
     resultSet.sort()
     return resultSet
@@ -80,10 +86,14 @@ def handlerQuery(args, allVersions):
             endVersion = startVersion
             startVersion = buffer
         allVersions = filterRange(allVersions, startVersion, endVersion)
+    else:
+        print ("No range parameter provided, taking 10 most recent versions...")
+        allVersions = allVersions[-10:] #Only last 10 to limit query time
     queryType = args.type
     if queryType is None:
         queryType = 'all'
-    else:
-        queryType = queryType[0]
-    for entry in getIssues(allVersions, queryType, args.categories):
+    print ("Querying type: {0}".format(queryType))
+    entries = getIssues(allVersions, queryType, args.categories)
+    print ("Query Result:")
+    for entry in entries:
         print (entry)

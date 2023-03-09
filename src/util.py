@@ -6,7 +6,7 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
 def loadUnityVersions():
-    base_search_page = PAGE_PREFIX_PATH + '/unity-5.6.0'
+    base_search_page = PAGE_PREFIX_PATH + '/5.6.0'
     page = urlopen(base_search_page)
     # parse the html using beautiful soup and store in variable `soup`
     soup = BeautifulSoup(page, 'html.parser')

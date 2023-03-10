@@ -13,7 +13,13 @@ def loadUnityVersions():
 
     # Take out the <div> of name and get its value
     mainPage = soup.find('div', attrs={'class': 'full-release'})
+    if mainPage is None:
+        print('Did not find div, probably unity website structure changed')
+        mainPage = soup.find('div', attrs={'class': 'releases-item-list'})
     versionDropdown = mainPage.find('ul', attrs={'class': 'options'})
+    if versionDropdown is None:
+        versionDropdown = mainPage.find('ul')
+    
 
 
     entries = versionDropdown.findAll('a')

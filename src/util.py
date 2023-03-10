@@ -6,14 +6,20 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 
 def loadUnityVersions():
-    base_search_page = PAGE_PREFIX_PATH + '/unity-5.6.0'
+    base_search_page = PAGE_PREFIX_PATH + '/5.6.0'
     page = urlopen(base_search_page)
     # parse the html using beautiful soup and store in variable `soup`
     soup = BeautifulSoup(page, 'html.parser')
 
     # Take out the <div> of name and get its value
     mainPage = soup.find('div', attrs={'class': 'full-release'})
+    if mainPage is None:
+        print('Did not find div, probably unity website structure changed')
+        mainPage = soup.find('div', attrs={'class': 'releases-item-list'})
     versionDropdown = mainPage.find('ul', attrs={'class': 'options'})
+    if versionDropdown is None:
+        versionDropdown = mainPage.find('ul')
+    
 
 
     entries = versionDropdown.findAll('a')

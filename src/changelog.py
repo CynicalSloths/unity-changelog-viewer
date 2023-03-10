@@ -15,8 +15,8 @@ class Changelog:
         page = urlopen(url)
         # parse the html using beautiful soup and store in variable `soup`
         soup = BeautifulSoup(page, 'html.parser')
-        mainPage = soup.find('h2', text='Release notes')
-        self.PageData = mainPage.parent
+        mainPage = soup.find('h2', text='Release Notes')
+        self.PageData = mainPage.parent.find('div', attrs={'class': 'release-notes'})
 
 
 
